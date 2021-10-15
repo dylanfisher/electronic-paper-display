@@ -3,6 +3,8 @@
 
 # Electronic paper display (EPD) Python driver from Waveshare
 # https://github.com/waveshare/e-Paper/blob/master/RaspberryPi_JetsonNano/python/lib/waveshare_epd/epd7in5_V2.py
+#
+# Run this script from a cron job every minute
 
 import os
 import time
@@ -10,7 +12,7 @@ import sys
 import random
 import signal
 import ffmpeg
-from PIL import Image
+from PIL import Image, ImageEnhance
 
 # Ensure this is the correct import for your particular screen
 from waveshare_epd import epd7in5_V2 as epd_driver
@@ -28,19 +30,20 @@ def is_supported_filetype(file):
     _, ext = os.path.splitext(file)
     return ext.lower() in [".jpeg", ".jpg"]
 
+# Initialize the EPD driver
+epd = epd_driver.EPD()
+width = epd.width   # 800
+height = epd.height # 480
+
+epd.init()
+
 # Ensure this is the correct path to your files directory
 file_dir = os.path.join(os.path.expanduser('~'), "Pictures")
 if not os.path.isdir(file_dir):
   os.mkdir(file_dir)
 
-epd = epd_driver.EPD()
-width = epd.width
-height = epd.height
-
-epd.init()
-
-# Pick a random .mp4 video in your video directory
-files = list(filter(is_supported_filetype, os.listdir(file_dir)))
+# Pick a random file recursively from the file directory
+files = list(filter(is_supported_filetype, [os.path.join(dp, f) for dp, dn, fn in os.walk(file_dir) for f in fn]))
 if not files:
     print("No files found")
     sys.exit()
