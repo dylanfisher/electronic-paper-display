@@ -19,6 +19,10 @@ def exithandler(signum, frame):
   finally:
     sys.exit()
 
+def is_supported_filetype(file):
+  _, ext = os.path.splitext(file)
+  return ext.lower() in [".jpeg", ".jpg"]
+
 signal.signal(signal.SIGTERM, exithandler)
 signal.signal(signal.SIGINT, exithandler)
 
