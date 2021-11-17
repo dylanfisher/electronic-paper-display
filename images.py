@@ -62,6 +62,7 @@ if not os.path.isdir(file_dir):
   os.mkdir(file_dir)
 
 # Pick a random file recursively from the file directory
+# TODO: use the image from the ~/epd_images directory as the source image
 files = list(filter(is_supported_filetype, [os.path.join(dp, f) for dp, dn, fn in os.walk(file_dir) for f in fn]))
 if not files:
     print("No files found")
@@ -71,6 +72,17 @@ current_file = os.path.join(file_dir, random.choice(files))
 # Create an empty PIL image canvas in which to paste the current image
 canvas_color = (255, 255, 255)
 canvas = Image.new('RGB', (width, height), canvas_color)
+
+# TODO:
+# - resize the image to get the current quadrant for the display. Check which display
+#   this is based on the presence of an ENV variable.
+#
+# ---------  ---------
+# - Pi #1 -  - Pi #2 -
+# ---------  ---------
+# ---------  ---------
+# - Pi #3 -  - Pi #4 -
+# ---------  ---------
 
 # Open image in PIL
 pil_img = Image.open(current_file)
@@ -83,6 +95,9 @@ canvas.paste(pil_img, (0, int((new_height - height) / -2.0)))
 
 # Update the EPD display with our image
 epd.display(epd.getbuffer(canvas))
+
+# TODO:
+# - delete the temporary image from ~/epd_images
 
 # Turn the EPD display off
 epd.sleep()
