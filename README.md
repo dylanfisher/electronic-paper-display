@@ -18,13 +18,33 @@ Install depdendencies:
 - `pip3 install pillow`
 - `pip3 install git+https://github.com/robweber/omni-epd.git#egg=omni-epd`
 
+### Set up incron
+
+- `sudo apt install incron`
+
+`sudo vim /etc/incron.conf` change editor to `vim`
+
+`sudo vim /etc/incron.allow`. Add user `pi`, save the file.
+
+run `incrontab -e`
+
+Paste the incron job, which looks for files created in the `~/epd_images` directory and runs the `images.py` script.
+
+`/home/pi/epd_images IN_CREATE /home/pi/epd/images.py`
+
+### Create/clone epd directories
+
+`git clone git@github.com:dylanfisher/electronic-paper-display.git ~/epd`
+
+`mkdir ~/epd_images`
+
 ## Scratchpad
 
 ### Imagemagick conversions
 
 Resize and crop images to fit the 2x2 EPD display grid
 
-`find . -maxdepth 1 -iname "*.jpg" | xargs -L1 -I{} convert -verbose -thumbnail 1600x960^ -gravity center -extent 1600x960 -unsharp 0x.5 "{}" ~/_resized/"{}"`
+`find . -maxdepth 1 -iname "*.jpg" | xargs -L1 -I{} convert -verbose -strip -thumbnail 1600x960^ -quality 40 -gravity center -extent 1600x960 -unsharp 0x.5 "{}" ~/_resized/"{}"`
 
 Potential idea for cropping into a single point of the image and displaying a particular zoomed-in point on each screen
 
