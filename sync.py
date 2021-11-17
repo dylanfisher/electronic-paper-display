@@ -8,6 +8,7 @@
 # file and automatically display it on their EPD display.
 
 import os
+import random
 import sys
 import signal
 import subprocess
