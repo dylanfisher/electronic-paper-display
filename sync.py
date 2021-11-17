@@ -53,4 +53,4 @@ devices = [
 
 # Sync the image across devices
 for device in devices:
-  subprocess.call(["rsync", "-a", random_file, device])
+  subprocess.call(["rsync", "-a", random_file, device + ":~/epd_images/"])
