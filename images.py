@@ -9,7 +9,6 @@
 import os
 import time
 import sys
-import random
 import signal
 import ffmpeg
 import math
@@ -34,12 +33,6 @@ def is_supported_filetype(file):
   _, ext = os.path.splitext(file)
   return ext.lower() in [".jpeg", ".jpg"]
 
-# Used to generate a gradient
-def interpolate(f_co, t_co, interval):
-  det_co =[(t - f) / interval for f , t in zip(f_co, t_co)]
-  for i in range(interval):
-    yield [round(f + det * i) for f, det in zip(f_co, det_co)]
-
 # Configure variables
 today = datetime.now()
 current_hour = int(today.strftime("%H"))
@@ -57,7 +50,7 @@ if current_hour > 2 and current_hour < 8:
   sys.exit()
 
 # Ensure this is the correct path to your files directory
-file_dir = os.path.join(os.path.expanduser('~'), "Pictures")
+file_dir = os.path.join(os.path.expanduser("~"), "epd_images")
 if not os.path.isdir(file_dir):
   os.mkdir(file_dir)
 
@@ -65,13 +58,13 @@ if not os.path.isdir(file_dir):
 # TODO: use the image from the ~/epd_images directory as the source image
 files = list(filter(is_supported_filetype, [os.path.join(dp, f) for dp, dn, fn in os.walk(file_dir) for f in fn]))
 if not files:
-    print("No files found")
-    sys.exit()
+  print("No files found")
+  sys.exit()
 current_file = os.path.join(file_dir, random.choice(files))
 
 # Create an empty PIL image canvas in which to paste the current image
 canvas_color = (255, 255, 255)
-canvas = Image.new('RGB', (width, height), canvas_color)
+canvas = Image.new("RGB", (width, height), canvas_color)
 
 # TODO:
 # - resize the image to get the current quadrant for the display. Check which display
@@ -96,8 +89,8 @@ canvas.paste(pil_img, (0, int((new_height - height) / -2.0)))
 # Update the EPD display with our image
 epd.display(epd.getbuffer(canvas))
 
-# TODO:
-# - delete the temporary image from ~/epd_images
+# Remove the file from the temporary epd_images directory
+os.remove(current_file)
 
 # Turn the EPD display off
 epd.sleep()

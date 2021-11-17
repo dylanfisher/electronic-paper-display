@@ -1,0 +1,51 @@
+#!/usr/bin/python3
+# -*- coding:utf-8 -*-
+#
+# Raspberry Pi Electronic Paper Display host sync script.
+# This script is intended to be run from a cron job every N minutes.
+# The script chooses a random image from a directory and syncs it across
+# a series of Raspberry Pi devices. Those Pi devices pick up on the new
+# file and automatically display it on their EPD display.
+
+import os
+import sys
+import signal
+import subprocess
+from datetime import datetime
+
+def exithandler(signum, frame):
+  try:
+    epd_driver.epdconfig.module_exit()
+  finally:
+    sys.exit()
+
+signal.signal(signal.SIGTERM, exithandler)
+signal.signal(signal.SIGINT, exithandler)
+
+# Configure variables
+today = datetime.now()
+current_hour = int(today.strftime("%H"))
+
+# Ensure this is the correct path to your files directory
+file_dir = os.path.join(os.path.expanduser("~"), "Pictures")
+if not os.path.isdir(file_dir):
+  os.mkdir(file_dir)
+
+# Pick a random file recursively from the file directory
+files = list(filter(is_supported_filetype, [os.path.join(dp, f) for dp, dn, fn in os.walk(file_dir) for f in fn]))
+if not files:
+  print("No files found")
+  sys.exit()
+
+random_file = os.path.join(file_dir, random.choice(files))
+
+devices = [
+  "pi@10.0.0.20",
+  "pi@10.0.0.21",
+  "pi@10.0.0.22",
+  "pi@10.0.0.23"
+]
+
+# Sync the image across devices
+for device in devices:
+  subprocess.call(["rsync", "-a", random_file, device])

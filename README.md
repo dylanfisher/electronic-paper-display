@@ -20,7 +20,7 @@ Install depdendencies:
 
 ### Set up incron
 
-- `sudo apt install incron`
+`sudo apt install incron`
 
 `sudo vim /etc/incron.conf` change editor to `vim`
 
