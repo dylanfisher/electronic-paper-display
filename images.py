@@ -50,7 +50,7 @@ epd.init()
 # if current_hour > 2 and current_hour < 8:
 #   epd.Clear()
 #   epd.sleep()
-#   exithandler()
+#   sys.exit()
 
 # Ensure this is the correct path to your files directory
 temp_file_dir = os.path.join(os.path.expanduser("~"), "epd_images")
@@ -61,7 +61,7 @@ if not os.path.isdir(temp_file_dir):
 files = list(filter(is_supported_filetype, [os.path.join(dp, f) for dp, dn, fn in os.walk(temp_file_dir) for f in fn]))
 if not files:
   print("No files found")
-  exithandler()
+  sys.exit()
 current_file = os.path.join(temp_file_dir, files[-1])
 
 # Create an empty PIL image canvas in which to paste the current image
@@ -80,7 +80,7 @@ canvas = Image.new("RGB", (width, height), canvas_color)
 
 # Get the index of this display
 epd_index = 0
-with open(".epd_screen_id") as f:
+with open(os.path.join(os.path.expanduser("~"), "epd", ".epd_screen_id")) as f:
   epd_index = int(f.read())
 
 # Open image in PIL. The image must be exactly twice the image dimensions of each EPD screen
