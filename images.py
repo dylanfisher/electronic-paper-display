@@ -7,6 +7,7 @@
 # Run this script from a cron job every minute
 
 import os
+import glob
 import time
 import sys
 import signal
@@ -115,8 +116,9 @@ canvas.paste(pil_img, (0, 0))
 # Update the EPD display with our image
 epd.display(epd.getbuffer(canvas))
 
-# Remove the file from the temporary epd_images directory
-os.remove(current_file)
+# Remove the files from the temporary epd_images directory
+for f in glob.glob(os.path.join(os.path.expanduser("~"), "epd_images")):
+  os.remove(f)
 
 # Turn the EPD display off
 epd.sleep()
