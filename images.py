@@ -65,16 +65,15 @@ current_file = os.path.join(temp_file_dir, files[-1])
 canvas_color = (255, 255, 255)
 canvas = Image.new("RGB", (width, height), canvas_color)
 
-# TODO:
-# - resize the image to get the current quadrant for the display. Check which display
-#   this is based on the presence of an ENV variable.
+# Each Raspberry Pi screen is assigned an index from 1-4. The image passed to this script
+# is then cropped and displayed across each screen.
 #
-# ---------  ---------
-# - Pi #1 -  - Pi #2 -
-# ---------  ---------
-# ---------  ---------
-# - Pi #3 -  - Pi #4 -
-# ---------  ---------
+# ----------   ----------
+# - EPD #1 -   - EPD #2 -
+# ----------   ----------
+# ----------   ----------
+# - EPD #3 -   - EPD #4 -
+# ----------   ----------
 
 # Get the index of this display
 epd_index = 0
