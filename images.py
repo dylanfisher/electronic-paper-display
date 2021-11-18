@@ -38,7 +38,7 @@ current_hour = int(today.strftime("%H"))
 
 # Log setup
 with open("info.log", "a+") as log_file:
-  log_file.write(today)
+  log_file.write(today.strftime("%m/%d/%Y, %H:%M:%S"))
 
 # Initialize the EPD driver
 epd = epd_driver.EPD()
