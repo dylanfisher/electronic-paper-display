@@ -11,10 +11,18 @@ The inspiration and initial code for this project comes from this project: https
 
 ## Installation
 
+Make sure SPI is enabled on the Raspberry Pi:
+
+- Run `sudo raspi-config`
+- Navigate to `Interface Options` > `SPI`
+- Select `<Finish>` to exit. Reboot if prompted.
+
 Install depdendencies:
 
 - `sudo apt install python3-pip`
-- `pip3 install git+https://github.com/waveshare/e-Paper.git#egg=waveshare-epd&subdirectory=RaspberryPi_JetsonNano/python`
+- `sudo apt install ffmpeg`
+- `pip3 install git+https://github.com/waveshare/e-Paper.git#subdirectory=RaspberryPi_JetsonNano/python&egg=waveshare-epd`
+- `pip3 install ffmpeg-python`
 - `pip3 install pillow`
 - `pip3 install git+https://github.com/robweber/omni-epd.git#egg=omni-epd`
 

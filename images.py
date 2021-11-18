@@ -55,7 +55,6 @@ if not os.path.isdir(file_dir):
   os.mkdir(file_dir)
 
 # Pick a random file recursively from the file directory
-# TODO: use the image from the ~/epd_images directory as the source image
 files = list(filter(is_supported_filetype, [os.path.join(dp, f) for dp, dn, fn in os.walk(file_dir) for f in fn]))
 if not files:
   print("No files found")
