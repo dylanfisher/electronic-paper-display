@@ -46,6 +46,8 @@ Paste the incron job, which looks for files created in the `~/epd_images` direct
 
 `mkdir ~/epd_images`
 
+Create a `.epd_screen_id` file in each of the Raspberry Pi's `epd` directory. Add the index of the display, e.g. `1`, `2`, `3` or `4`.
+
 ## Scratchpad
 
 ### Imagemagick conversions

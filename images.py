@@ -76,14 +76,41 @@ canvas = Image.new("RGB", (width, height), canvas_color)
 # - Pi #3 -  - Pi #4 -
 # ---------  ---------
 
-# Open image in PIL
+# Get the index of this display
+epd_index = 0
+with open('.epd_screen_id') as f:
+  epd_index = int(f.read())
+
+# Open image in PIL. The image must be exactly twice the image dimensions of each EPD screen
 pil_img = Image.open(current_file)
-# Resize the image so that it covers the size of the display, without changing the aspect ratio
-img_width, img_height = pil_img.size
-ratio = (width/float(pil_img.size[0]))
-new_height = int((float(img_height)*float(ratio)))
-pil_img = pil_img.resize((width, new_height), Image.NEAREST)
-canvas.paste(pil_img, (0, int((new_height - height) / -2.0)))
+
+# Setting the points for cropped image
+left = 0
+top = 0
+right = 0
+bottom = 0
+
+if epd_index == 1:
+  right = width
+  bottom = height
+elif epd_index == 2:
+  left = width + 1
+  right = width * 2
+  bottom = height
+elif epd_index == 3:
+  top = height + 1
+  right = width
+  bottom = height * 2
+elif epd_index == 4:
+  left = width + 1
+  top = height + 1
+  right = width * 2
+  bottom = height * 2
+
+# Cropped image of above dimension
+pil_img = pil_img.crop((left, top, right, bottom))
+
+canvas.paste(pil_img, (0, 0))
 
 # Update the EPD display with our image
 epd.display(epd.getbuffer(canvas))
