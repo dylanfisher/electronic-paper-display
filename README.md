@@ -38,7 +38,7 @@ run `incrontab -e`
 
 Paste the incron job, which looks for files created in the `~/epd_images` directory and runs the `images.py` script.
 
-`/home/pi/epd_images IN_CREATE /home/pi/epd/images.py`
+`/home/pi/epd_images/image.jpg IN_CREATE /home/pi/epd/images.py`
 
 ### Create/clone epd directories
 

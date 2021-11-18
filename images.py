@@ -7,7 +7,7 @@
 # Run this script from a cron job every minute
 
 import os
-# import time
+import time
 import sys
 import signal
 # import ffmpeg
@@ -32,6 +32,9 @@ def is_supported_filetype(file):
   _, ext = os.path.splitext(file)
   return ext.lower() in [".jpeg", ".jpg"]
 
+# Delay the execution of this script to allow scp / rsync commands to finish modifying images file
+time.sleep(3)
+
 # Configure variables
 today = datetime.now()
 # current_hour = int(today.strftime("%H"))
@@ -50,7 +53,7 @@ epd.init()
 # if current_hour > 2 and current_hour < 8:
 #   epd.Clear()
 #   epd.sleep()
-#   sys.exit()
+#   exithandler()
 
 # Ensure this is the correct path to your files directory
 temp_file_dir = os.path.join(os.path.expanduser("~"), "epd_images")
@@ -61,7 +64,7 @@ if not os.path.isdir(temp_file_dir):
 files = list(filter(is_supported_filetype, [os.path.join(dp, f) for dp, dn, fn in os.walk(temp_file_dir) for f in fn]))
 if not files:
   print("No files found")
-  sys.exit()
+  exithandler()
 current_file = os.path.join(temp_file_dir, files[-1])
 
 # Create an empty PIL image canvas in which to paste the current image
