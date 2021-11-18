@@ -51,7 +51,7 @@ devices = [
 # Sync the image across devices, run the commands in parallel
 processes = []
 for device in devices:
-  command = "rsync -a " + random_file + " " + device + ":~/epd_images/"
+  command = "scp " + random_file + " " + device + ":~/epd_images/"
   process = subprocess.Popen(command, shell=True)
   processes.append(process)
 
