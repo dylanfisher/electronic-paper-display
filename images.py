@@ -12,7 +12,7 @@ import sys
 import signal
 import ffmpeg
 # import math
-# import numpy as np
+import numpy as np
 from PIL import Image, ImageFont, ImageDraw
 from datetime import datetime
 
