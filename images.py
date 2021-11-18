@@ -13,7 +13,6 @@ import sys
 import signal
 import ffmpeg
 import math
-import random
 import numpy as np
 from PIL import Image, ImageFont, ImageDraw
 from datetime import datetime
@@ -51,16 +50,16 @@ if current_hour > 2 and current_hour < 8:
   sys.exit()
 
 # Ensure this is the correct path to your files directory
-file_dir = os.path.join(os.path.expanduser("~"), "epd_images")
-if not os.path.isdir(file_dir):
-  os.mkdir(file_dir)
+temp_file_dir = os.path.join(os.path.expanduser("~"), "epd_images")
+if not os.path.isdir(temp_file_dir):
+  os.mkdir(temp_file_dir)
 
-# Pick a random file recursively from the file directory
-files = list(filter(is_supported_filetype, [os.path.join(dp, f) for dp, dn, fn in os.walk(file_dir) for f in fn]))
+# Pick a file from the file directory
+files = list(filter(is_supported_filetype, [os.path.join(dp, f) for dp, dn, fn in os.walk(temp_file_dir) for f in fn]))
 if not files:
   print("No files found")
   sys.exit()
-current_file = os.path.join(file_dir, random.choice(files))
+current_file = os.path.join(temp_file_dir, files[-1])
 
 # Create an empty PIL image canvas in which to paste the current image
 canvas_color = (255, 255, 255)
@@ -117,7 +116,7 @@ canvas.paste(pil_img, (0, 0))
 epd.display(epd.getbuffer(canvas))
 
 # Remove the files from the temporary epd_images directory
-for f in glob.glob("~/epd_images/*"):
+for f in files:
   os.remove(f)
 
 # Turn the EPD display off
