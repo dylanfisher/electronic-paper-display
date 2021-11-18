@@ -34,7 +34,7 @@ def is_supported_filetype(file):
 
 # Configure variables
 today = datetime.now()
-# current_hour = int(today.strftime("%H"))
+current_hour = int(today.strftime("%H"))
 
 # Log setup
 with open("info.log", "a+") as log_file:
