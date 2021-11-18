@@ -7,7 +7,7 @@
 # Run this script from a cron job every minute
 
 import os
-import time
+# import time
 import sys
 import signal
 # import ffmpeg
@@ -31,9 +31,6 @@ signal.signal(signal.SIGINT, exithandler)
 def is_supported_filetype(file):
   _, ext = os.path.splitext(file)
   return ext.lower() in [".jpeg", ".jpg"]
-
-# Delay the execution of this script to allow scp / rsync commands to finish modifying images file
-time.sleep(3)
 
 # Configure variables
 today = datetime.now()
