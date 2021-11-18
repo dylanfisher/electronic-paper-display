@@ -47,10 +47,10 @@ height = epd.height # 480
 epd.init()
 
 # Clear the screen between the hours of 2am and 8am to prevent potential burn-in
-# if current_hour > 2 and current_hour < 8:
-#   epd.Clear()
-#   epd.sleep()
-#   sys.exit()
+if current_hour > 2 and current_hour < 8:
+  epd.Clear()
+  epd.sleep()
+  sys.exit()
 
 # Ensure this is the correct path to your files directory
 temp_file_dir = os.path.join(os.path.expanduser("~"), "epd_images")
