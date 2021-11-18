@@ -15,10 +15,7 @@ import subprocess
 from datetime import datetime
 
 def exithandler(signum, frame):
-  try:
-    epd_driver.epdconfig.module_exit()
-  finally:
-    sys.exit()
+  sys.exit()
 
 def is_supported_filetype(file):
   _, ext = os.path.splitext(file)
