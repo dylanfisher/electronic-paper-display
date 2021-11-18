@@ -51,6 +51,12 @@ devices = [
   "pi@10.0.0.23"
 ]
 
-# Sync the image across devices
+# Sync the image across devices, run the commands in parallel
+processes = []
 for device in devices:
-  subprocess.call(["rsync", "-a", random_file, device + ":~/epd_images/"])
+  command = "rsync -a " + random_file + " " + device + ":~/epd_images/"
+  process = subprocess.Popen(command, shell=True)
+  processes.append(process)
+
+# Collect process statuses
+output = [p.wait() for p in processes]
