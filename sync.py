@@ -51,8 +51,7 @@ devices = [
 # Sync the image across devices, run the commands in parallel
 processes = []
 for device in devices:
-  command = "rsync -a " + random_file + " " + device + ":~/epd_images/"
-  processes.append(subprocess.Popen(command, shell=True))
+  processes.append(subprocess.Popen("rsync -a " + random_file + " " + device + ":~/epd_images/", shell=True))
   processes.append(subprocess.Popen("ssh " + device + " /usr/bin/python3 /home/pi/epd/images.py", shell=True))
 
 # Collect process statuses

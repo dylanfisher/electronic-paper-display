@@ -26,19 +26,15 @@ Install depdendencies:
 - `pip3 install pillow`
 - `pip3 install git+https://github.com/robweber/omni-epd.git#egg=omni-epd`
 
-### Set up incron
+## Schedule Cron jobs
 
-`sudo apt install incron`
+On the host Raspberry Pi, schedule a cronjob to call the sync script every few minutes.
 
-`sudo vim /etc/incron.conf` change editor to `vim`
+`# Run Sync script every 2 minutes, "At every 2nd minute past every hour from 0 through 2 and every hour from 8 through 23."`
 
-`sudo vim /etc/incron.allow`. Add user `pi`, save the file.
+`*/2 0-2,8-23 * * * ~/epd/sync.py`
 
-run `incrontab -e`
-
-Paste the incron job, which looks for files created in the `~/epd_images` directory and runs the `images.py` script.
-
-`/home/pi/epd_images/image.jpg IN_CREATE /home/pi/epd/images.py`
+`@reboot ~/epd/sync.py`
 
 ### Create/clone epd directories
 
