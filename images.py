@@ -10,7 +10,7 @@ import os
 # import time
 import sys
 import signal
-# import ffmpeg
+import ffmpeg
 # import math
 # import numpy as np
 from PIL import Image, ImageFont, ImageDraw
@@ -38,7 +38,7 @@ current_hour = int(today.strftime("%H"))
 
 # Log setup
 with open("info.log", "a+") as log_file:
-  log_file.write(today.strftime("%m/%d/%Y, %H:%M:%S"))
+  log_file.write(today.strftime("%m/%d/%Y, %H:%M:%S\n"))
 
 # Initialize the EPD driver
 epd = epd_driver.EPD()
