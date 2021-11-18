@@ -7,13 +7,12 @@
 # Run this script from a cron job every minute
 
 import os
-import glob
-import time
+# import time
 import sys
 import signal
-import ffmpeg
-import math
-import numpy as np
+# import ffmpeg
+# import math
+# import numpy as np
 from PIL import Image, ImageFont, ImageDraw
 from datetime import datetime
 
@@ -36,6 +35,10 @@ def is_supported_filetype(file):
 # Configure variables
 today = datetime.now()
 current_hour = int(today.strftime("%H"))
+
+# Log setup
+with open("info.log", "a+") as log_file:
+  log_file.write(today)
 
 # Initialize the EPD driver
 epd = epd_driver.EPD()
