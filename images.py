@@ -117,7 +117,7 @@ canvas.paste(pil_img, (0, 0))
 epd.display(epd.getbuffer(canvas))
 
 # Remove the files from the temporary epd_images directory
-for f in glob.glob(os.path.join(os.path.expanduser("~"), "epd_images")):
+for f in glob.glob("~/epd_images/*"):
   os.remove(f)
 
 # Turn the EPD display off
