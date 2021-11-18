@@ -19,14 +19,6 @@ from datetime import datetime
 # Ensure this is the correct import for your particular screen
 from waveshare_epd import epd7in5_V2 as epd_driver
 
-# Set up date
-today = datetime.now()
-# current_hour = int(today.strftime("%H"))
-
-# Log setup
-with open("info.log", "a+") as log_file:
-  log_file.write(today.strftime("%m/%d/%Y, %H:%M:%S\n"))
-
 def exithandler(signum, frame):
   try:
     epd_driver.epdconfig.module_exit()
@@ -39,6 +31,14 @@ signal.signal(signal.SIGINT, exithandler)
 def is_supported_filetype(file):
   _, ext = os.path.splitext(file)
   return ext.lower() in [".jpeg", ".jpg"]
+
+# Configure variables
+today = datetime.now()
+# current_hour = int(today.strftime("%H"))
+
+# Log setup
+with open("info.log", "a+") as log_file:
+  log_file.write(today.strftime("%m/%d/%Y, %H:%M:%S\n"))
 
 # Initialize the EPD driver
 epd = epd_driver.EPD()
