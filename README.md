@@ -50,7 +50,7 @@ Create a `.epd_screen_id` file in each of the Raspberry Pi's `epd` directory. Ad
 
 Resize and crop images to fit the 2x2 EPD display grid
 
-`find . -maxdepth 1 -iname "*.jpg" | xargs -L1 -I{} convert -verbose -strip -thumbnail 1600x960^ -quality 40 -gravity center -extent 1600x960 -unsharp 0x.5 "{}" ~/_resized/"{}"`
+`find . -maxdepth 1 -iname "*.jpg" | xargs -L1 -I{} convert -verbose -strip -thumbnail 1600x960^ -quality 40 -gravity center -extent 1600x960 -unsharp 0x.5 "{}" ~/_converted/"{}"`
 
 Potential idea for cropping into a single point of the image and displaying a particular zoomed-in point on each screen
 
