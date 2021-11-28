@@ -12,6 +12,9 @@ import random
 import sys
 import signal
 import subprocess
+import shutil
+import fileinput
+from pprint import pprint
 from datetime import datetime
 
 def exithandler(signum, frame):
@@ -20,6 +23,9 @@ def exithandler(signum, frame):
 def is_supported_filetype(file):
   _, ext = os.path.splitext(file)
   return ext.lower() in [".jpeg", ".jpg"]
+
+def print_to_stdout(*a):
+  print(*a, file = sys.stdout)
 
 signal.signal(signal.SIGTERM, exithandler)
 signal.signal(signal.SIGINT, exithandler)
@@ -32,18 +38,54 @@ current_hour = int(today.strftime("%H"))
 if current_hour > 3 and current_hour < 8:
   sys.exit()
 
-# Ensure this is the correct path to your files directory
-file_dir = os.path.join(os.path.expanduser("~"), "Pictures")
-if not os.path.isdir(file_dir):
-  os.mkdir(file_dir)
+# Create the temporary directories if necessary
+tmp_dir = os.path.join(os.path.expanduser("~"), "epd/tmp")
+if not os.path.isdir(tmp_dir):
+  os.mkdir(tmp_dir)
 
-# Pick a random file recursively from the file directory
-files = list(filter(is_supported_filetype, [os.path.join(dp, f) for dp, dn, fn in os.walk(file_dir) for f in fn]))
+tmp_dir = os.path.join(os.path.expanduser("~"), "epd/tmp/images")
+if not os.path.isdir(tmp_dir):
+  os.mkdir(tmp_dir)
+
+tmp_image_dir_name = today.strftime("%Y-%m-%d")
+tmp_image_dir = os.path.join(os.path.expanduser("~"), "epd/tmp/images", tmp_image_dir_name)
+if not os.path.isdir(tmp_image_dir):
+  os.mkdir(tmp_image_dir)
+
+tmp_image_dir_subfolders = [ f.path for f in os.scandir(os.path.join(os.path.expanduser("~"), "epd/tmp/images")) if f.is_dir() ]
+for d in tmp_image_dir_subfolders:
+  if d == tmp_image_dir:
+    # Create a file list of random images from the NAS server sync with this day's images
+    if not os.path.exists(tmp_image_dir + "/file_list.txt"):
+      with open(tmp_image_dir + "/file_list.txt", "w") as f:
+        process = subprocess.Popen("ssh dylan@10.0.0.3 \"cd /volume1/main/photos/lightroom_processed_jpeg; find . -type f -name '*.jpg' | shuf -n 100\"", shell=True, stdout=subprocess.PIPE, universal_newlines=True)
+        remote_files = process.communicate()[0]
+        f.write(remote_files)
+    # Read the file list and check if the jpg has already been synced. If the jpg doesn't exist, use scp to copy the file over to the Raspberry Pi
+    with open(tmp_image_dir + "/file_list.txt", "r") as f:
+      for line in f:
+        filename = line.rstrip().split('/')[-1]
+        if not os.path.exists(tmp_image_dir + "/" + filename):
+          # It would be easier to use rsync here, but the NAS permissions are set up in such a way where ssh key login is not working
+          process = subprocess.Popen("scp dylan@10.0.0.3:/volume1/main/photos/lightroom_processed_jpeg/" + line.rstrip() + " " + tmp_image_dir, shell=True)
+          process.wait()
+    continue
+  else:
+    shutil.rmtree(d)
+
+# sys.exit()
+
+# Pick a random file recursively from the image directory
+files = list(filter(is_supported_filetype, [os.path.join(dp, f) for dp, dn, fn in os.walk(tmp_image_dir) for f in fn]))
 if not files:
   print("No files found")
   sys.exit()
 
-random_file = os.path.join(file_dir, random.choice(files))
+random_file = random.choice(files)
+
+print_to_stdout(random_file)
+
+# sys.exit()
 
 devices = [
   "pi@10.0.0.20",
@@ -55,7 +97,7 @@ devices = [
 # Sync the image across devices, run the commands in parallel
 processes = []
 for device in devices:
-  processes.append(subprocess.Popen("rsync -a " + random_file + " " + device + ":~/epd_images/; ssh " + device + " /usr/bin/python3 /home/pi/epd/images.py", shell=True))
+  processes.append(subprocess.Popen("rsync -aP " + random_file + " " + device + ":~/epd/tmp/synced_images/; ssh " + device + " /usr/bin/python3 /home/pi/epd/images.py", shell=True))
 
 # Collect process statuses
 output = [p.wait() for p in processes]

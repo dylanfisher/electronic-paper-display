@@ -36,10 +36,6 @@ def is_supported_filetype(file):
 today = datetime.now()
 current_hour = int(today.strftime("%H"))
 
-# Log setup
-with open("info.log", "a+") as log_file:
-  log_file.write(today.strftime("%m/%d/%Y, %H:%M:%S\n"))
-
 # Initialize the EPD driver
 epd = epd_driver.EPD()
 width = epd.width   # 800
@@ -53,7 +49,7 @@ if current_hour > 2 and current_hour < 8:
   sys.exit()
 
 # Ensure this is the correct path to your files directory
-temp_file_dir = os.path.join(os.path.expanduser("~"), "epd_images")
+temp_file_dir = os.path.join(os.path.expanduser("~"), "epd/tmp/synced_images")
 if not os.path.isdir(temp_file_dir):
   os.mkdir(temp_file_dir)
 
