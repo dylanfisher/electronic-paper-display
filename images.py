@@ -14,11 +14,14 @@ import signal
 # import ffmpeg
 # import math
 # import numpy as np
-from PIL import Image, ImageFont, ImageDraw
+from PIL import Image, ImageFont, ImageDraw, ImageFile
 from datetime import datetime
 
 # Ensure this is the correct import for your particular screen
 from waveshare_epd import epd7in5_V2 as epd_driver
+
+# https://stackoverflow.com/questions/12984426/pil-ioerror-image-file-truncated-with-big-images
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def exithandler(signum, frame):
   try:
@@ -32,6 +35,9 @@ signal.signal(signal.SIGINT, exithandler)
 def is_supported_filetype(file):
   _, ext = os.path.splitext(file)
   return ext.lower() in [".jpeg", ".jpg"]
+
+def print_to_stdout(*a):
+  print(*a, file = sys.stdout)
 
 # Configure variables
 today = datetime.now()
@@ -86,25 +92,25 @@ img_width, img_height = pil_img.size
 
 # Set the crop points for each display's image
 if epd_index == 1:
-  left = random.randint(0, (img_width / 2) - width)
-  top = random.randint(0, (img_height / 2) - height)
-  right = left + img_width
-  bottom = top + img_height
+  left = random.randint(0, int((img_width / 2) - width))
+  top = random.randint(0, int((img_height / 2) - height))
+  right = left + width
+  bottom = top + height
 elif epd_index == 2:
-  left = random.randint((img_width / 2) + 1, (img_width / 2) - width)
-  top = random.randint(0, (img_height / 2) - height)
-  right = left + img_width
-  bottom = top + img_height
+  left = random.randint(int(img_width / 2) + 1, img_width - width)
+  top = random.randint(0, int(img_height / 2) - height)
+  right = left + width
+  bottom = top + height
 elif epd_index == 3:
-  left = random.randint(0, (img_width / 2) - width)
-  top = random.randint((img_height / 2) + 1, (img_height / 2) - height)
-  right = left + img_width
-  bottom = top + img_height
+  left = random.randint(0, int((img_width / 2) - width))
+  top = random.randint(int(img_height / 2) + 1, img_height - height)
+  right = left + width
+  bottom = top + height
 elif epd_index == 4:
-  left = random.randint((img_width / 2) + 1, (img_width / 2) - width)
-  top = random.randint((img_height / 2) + 1, (img_height / 2) - height)
-  right = left + img_width
-  bottom = top + img_height
+  left = random.randint(int(img_width / 2) + 1, img_width - width)
+  top = random.randint(int(img_height / 2) + 1, img_height - height)
+  right = left + width
+  bottom = top + height
 
 # Cropped image of above dimension
 pil_img = pil_img.crop((left, top, right, bottom))
@@ -120,3 +126,5 @@ for f in files:
 
 # Turn the EPD display off
 epd.sleep()
+
+sys.exit()

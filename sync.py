@@ -73,8 +73,6 @@ for d in tmp_image_dir_subfolders:
   else:
     shutil.rmtree(d)
 
-# sys.exit()
-
 # Pick a random file recursively from the image directory
 files = list(filter(is_supported_filetype, [os.path.join(dp, f) for dp, dn, fn in os.walk(tmp_image_dir) for f in fn]))
 if not files:
@@ -82,10 +80,6 @@ if not files:
   sys.exit()
 
 random_file = random.choice(files)
-
-print_to_stdout(random_file)
-
-# sys.exit()
 
 devices = [
   "pi@10.0.0.20",
