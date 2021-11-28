@@ -8,6 +8,7 @@
 
 import os
 # import time
+import random
 import sys
 import signal
 # import ffmpeg
@@ -81,29 +82,29 @@ with open(os.path.join(os.path.expanduser("~"), "epd", ".epd_screen_id")) as f:
 
 # Open image in PIL. The image must be exactly twice the image dimensions of each EPD screen
 pil_img = Image.open(current_file)
+img_width, img_height = pil_img.size
 
-# Setting the points for cropped image
-left = 0
-top = 0
-right = 0
-bottom = 0
-
+# Set the crop points for each display's image
 if epd_index == 1:
-  right = width
-  bottom = height
+  left = random.randint(0, (img_width / 2) - width)
+  top = random.randint(0, (img_height / 2) - height)
+  right = left + img_width
+  bottom = top + img_height
 elif epd_index == 2:
-  left = width + 1
-  right = width * 2
-  bottom = height
+  left = random.randint((img_width / 2) + 1, (img_width / 2) - width)
+  top = random.randint(0, (img_height / 2) - height)
+  right = left + img_width
+  bottom = top + img_height
 elif epd_index == 3:
-  top = height + 1
-  right = width
-  bottom = height * 2
+  left = random.randint(0, (img_width / 2) - width)
+  top = random.randint((img_height / 2) + 1, (img_height / 2) - height)
+  right = left + img_width
+  bottom = top + img_height
 elif epd_index == 4:
-  left = width + 1
-  top = height + 1
-  right = width * 2
-  bottom = height * 2
+  left = random.randint((img_width / 2) + 1, (img_width / 2) - width)
+  top = random.randint((img_height / 2) + 1, (img_height / 2) - height)
+  right = left + img_width
+  bottom = top + img_height
 
 # Cropped image of above dimension
 pil_img = pil_img.crop((left, top, right, bottom))
