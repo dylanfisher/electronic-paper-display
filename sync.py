@@ -16,6 +16,7 @@ import shutil
 import fileinput
 from pprint import pprint
 from datetime import datetime
+from PIL import Image
 
 def exithandler(signum, frame):
   sys.exit()
@@ -88,10 +89,20 @@ devices = [
   "pi@10.0.0.23"
 ]
 
+# Open image in PIL (Python Imaging Library)
+pil_img = Image.open(random_file)
+img_width, img_height = pil_img.size
+
+# Resize the original source image to be a bit smaller
+max_size = 3200
+if (img_width > max_size) or (img_height > max_size):
+  pil_img.thumbnail((max_size, max_size), Image.ANTIALIAS)
+  pil_img.save(tmp_dir + "/resized_thumbnail.jpg", "JPEG")
+
 # Sync the image across devices, run the commands in parallel
 processes = []
 for device in devices:
-  processes.append(subprocess.Popen("rsync -aP --rsync-path='mkdir -p ~/epd/tmp/synced_images && rsync' " + random_file + " " + device + ":~/epd/tmp/synced_images/; ssh " + device + " /usr/bin/python3 /home/pi/epd/images.py", shell=True))
+  processes.append(subprocess.Popen("rsync -aP --rsync-path='mkdir -p ~/epd/tmp/synced_images && rsync' " + tmp_dir + "/resized_thumbnail.jpg" + " " + device + ":~/epd/tmp/synced_images/; ssh " + device + " /usr/bin/python3 /home/pi/epd/images.py", shell=True))
 
 # Collect process statuses
 output = [p.wait() for p in processes]

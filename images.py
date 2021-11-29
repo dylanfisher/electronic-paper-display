@@ -86,7 +86,7 @@ epd_index = 0
 with open(os.path.join(os.path.expanduser("~"), "epd", ".epd_screen_id")) as f:
   epd_index = int(f.read())
 
-# Open image in PIL. The image must be exactly twice the image dimensions of each EPD screen
+# Open image in PIL (Python Imaging Library)
 pil_img = Image.open(current_file)
 img_width, img_height = pil_img.size
 
@@ -94,23 +94,21 @@ img_width, img_height = pil_img.size
 if epd_index == 1:
   left = random.randint(0, int((img_width / 2) - width))
   top = random.randint(0, int((img_height / 2) - height))
-  right = left + width
-  bottom = top + height
 elif epd_index == 2:
   left = random.randint(int(img_width / 2) + 1, img_width - width)
   top = random.randint(0, int(img_height / 2) - height)
-  right = left + width
-  bottom = top + height
 elif epd_index == 3:
   left = random.randint(0, int((img_width / 2) - width))
   top = random.randint(int(img_height / 2) + 1, img_height - height)
-  right = left + width
-  bottom = top + height
 elif epd_index == 4:
   left = random.randint(int(img_width / 2) + 1, img_width - width)
   top = random.randint(int(img_height / 2) + 1, img_height - height)
-  right = left + width
-  bottom = top + height
+else:
+  left = 0
+  top = 0
+
+right = left + width
+bottom = top + height
 
 # Cropped image of above dimension
 pil_img = pil_img.crop((left, top, right, bottom))
